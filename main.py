@@ -232,7 +232,7 @@ def main():
         bucket_name=bucket_name,
         s3_client=s3_client,
         s3_prefix="update_db",
-        exclude_patterns=["*.txt", "*.py", "liara*", "*.ipynb", "__pycache__/*", ".dockerignore", ".git*", "cron*", "README.md"]
+        exclude_patterns=["*.txt", "*.py", "liara*", "*.ipynb", "__pycache__/*", ".dockerignore", ".git*", "cron*", "README.md", "*.env"]
     )
     print('upload done.')
 
