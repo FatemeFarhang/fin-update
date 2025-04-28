@@ -7,3 +7,5 @@ bs4
 numpy
 xlcalculator
 html5lib
+python-dotenv
+requests

@@ -15,6 +15,9 @@ from pymongo import MongoClient
 import os
 from utils import get_s3_client
 from sync import sync_directory_to_s3
+from dotenv import load_dotenv
+
+load_dotenv()
 
 today = datetime.now().date().strftime('%Y-%m-%d')
 yesterday = (datetime.now().date() - timedelta(days=1)).strftime('%Y-%m-%d')
