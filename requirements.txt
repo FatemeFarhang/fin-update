@@ -1,0 +1,9 @@
+boto3
+pymongo
+unidecode
+jalali-pandas
+pandas
+bs4
+numpy
+xlcalculator
+html5lib
