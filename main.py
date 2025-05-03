@@ -195,6 +195,7 @@ def update(date, path_download_html, path_download_excel, path_export, collectio
 
         try:
             result = collection.insert_many(processed_docs, ordered=False)
+            logger.info(f"[Info] Inserts: {result.get("insertedIds", 0)} ")
         except BulkWriteError as bwe:
             details = bwe.details
             write_errors = details.get("writeErrors", [])
@@ -219,12 +220,12 @@ def main():
     # files = list_files(s3_client, bucket_name)
     # if files:
     #     print(files)
-    for date in [today, yesterday]:
-        path_download_excel = path_download + '/excel/'
-        path_download_html = path_download + '/html/'
-        os.makedirs(path_download_html, exist_ok=True)
-        os.makedirs(path_download_excel, exist_ok=True)
-        update(date=date, path_download_excel=path_download_excel, path_download_html=path_download_html, path_export=path_export, collection=new_collection)
+
+    path_download_excel = path_download + '/excel/'
+    path_download_html = path_download + '/html/'
+    os.makedirs(path_download_html, exist_ok=True)
+    os.makedirs(path_download_excel, exist_ok=True)
+    update(date=yesterday, path_download_excel=path_download_excel, path_download_html=path_download_html, path_export=path_export, collection=new_collection)
     
     print('uploading files:')
     sync_directory_to_s3(
