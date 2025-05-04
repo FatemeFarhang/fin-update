@@ -195,7 +195,7 @@ def update(date, path_download_html, path_download_excel, path_export, collectio
 
         try:
             result = collection.insert_many(processed_docs, ordered=False)
-            logger.info(f"[Info] Inserts: {result.get("insertedIds", 0)} ")
+            logger.info(f"[Info] No of inserts: {len(result.inserted_ids)}. Inserts: {result.inserted_ids}")
         except BulkWriteError as bwe:
             details = bwe.details
             write_errors = details.get("writeErrors", [])
