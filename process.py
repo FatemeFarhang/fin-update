@@ -7,7 +7,6 @@ import logging
 from bs4 import BeautifulSoup
 from xlcalculator import ModelCompiler
 from xlcalculator import Evaluator
-from multiprocessing import Pool
 import jalali_pandas
 from unidecode import unidecode
 import string
@@ -56,7 +55,7 @@ def json_formatter(row):
 
 ## Processing cell values before export
 def process_negative_values(s):
-    return re.sub(r'\((\d+)\)', '-\\1', s)
+    return re.sub(r'\((\d+)\)', '-\\1', str(s))
 
 def pre_text(text):
     if '%' in str(text):
@@ -269,6 +268,15 @@ def construct_from_html_tag(tag):
 def json_export(index_row, path_download_html, path_download_excel):
     dict_report = index_row.to_dict()
     dict_report['sheets'] = []
+    dict_report['p_date'] = unidecode(re.findall(r'(\d{4}/\d{2}/\d{2})', str(index_row['title']))[0])
+    find_period = re.findall(r'دوره\s*(\d+)\s*ماهه', str(index_row['title']))
+    if find_period:
+        dict_report['period'] = int(unidecode(find_period[0]))
+    else:
+        if re.findall(r'سال\s+مالی', str(index_row['title'])):
+            dict_report['period'] = 12
+        else:
+            logger.info(f'[Title Error] Could not extract period of the report. report no. [{index_row["trace_no"]}]')
     sheets = [str(Path(p)) for p in glob(path_download_html+str(index_row['trace_no'])+'-*')]
     for fname in sheets:
         try:
@@ -279,7 +287,7 @@ def json_export(index_row, path_download_html, path_download_excel):
         try:
             sheet_data = datasource_from_html(html_content=html_content)
             if sheet_data:
-                dict_report.update({k: sheet_data.get(k, None) for k in ['title_Fa', 'title_En', 'period', 'yearEndToDate', 'kind', 'type', 'isAudited', 'state']})
+                dict_report.update({k: sheet_data.get(k, None) for k in ['title_Fa', 'title_En', 'yearEndToDate', 'kind', 'type', 'isAudited', 'state']})
                 dict_report['version'] = re.findall(r'V(\d{1})', str(sheet_data['title_En']))
                 dict_report['title_info'] = re.findall(r'(\b[^-]+\b)\s*\-', str(sheet_data['title_En']))
                 if (str(sheet_data['title_En']).find('Other')>-1) or (str(sheet_data['title_En']).find('Child')>-1):

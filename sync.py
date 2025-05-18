@@ -1,5 +1,3 @@
-# File: s3_sync.py
-
 import os
 import fnmatch
 import boto3
