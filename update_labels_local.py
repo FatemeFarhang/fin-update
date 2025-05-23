@@ -42,16 +42,15 @@ def update_labels(row):
          array_filters=[ {"sheet.title_Fa": row['sheet']} ,{"element.key": row['distinctValues']} ] 
       )
       if result.modified_count!=0:
-         logging.info(f"No of modified: {result.modified_count}")
+         # logging.info(f"No of modified: {result.modified_count}")
+         pass
       else:
-         logging.info(f"No document was modified for this label: {row['Label']}")
+         logging.info(f"No document was modified for this label: {row['Label']} in sheet {row['sheet']}")
 
    except errors.OperationFailure as e:
       logging.info(f"Operation failed: {e}")
-      raise
    except errors.PyMongoError as e:
       logging.info(f"An error occurred: {e}")
-      raise
    
 if __name__=="__main__":
    s3_client = get_s3_client()
@@ -68,4 +67,4 @@ if __name__=="__main__":
    # rows = [row for _, row in label_df_fill.iterrows()]
    # pool = Pool(processes=8)
    # res = pool.map(update_labels, rows)
-   print('Finished updating labels.')
+   logging.info('Finished updating labels.')
