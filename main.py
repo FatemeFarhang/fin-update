@@ -13,6 +13,7 @@ import jalali_pandas
 from pymongo.errors import BulkWriteError
 from pymongo import MongoClient
 import os
+import shutil
 from utils import get_s3_client
 from sync import sync_directory_to_s3
 from dotenv import load_dotenv
@@ -227,7 +228,7 @@ def main():
     os.makedirs(path_download_excel, exist_ok=True)
     update(date=yesterday, path_download_excel=path_download_excel, path_download_html=path_download_html, path_export=path_export, collection=new_collection)
     
-    print('uploading files:')
+    print('Uploading files:')
     sync_directory_to_s3(
         local_directory="",
         bucket_name=bucket_name,
@@ -235,7 +236,9 @@ def main():
         s3_prefix="update_db",
         exclude_patterns=["*.txt", "*.py", "liara*", "*.ipynb", "__pycache__/*", ".dockerignore", ".git*", "cron*", "README.md", "*.env", "*.xlsx"]
     )
-    print('upload done.')
-
+    print('Upload done.')
+    shutil.rmtree(today)
+    print(f"Folder '{today}' and its contents have been deleted.")
+    
 if __name__=='__main__':
     main()
